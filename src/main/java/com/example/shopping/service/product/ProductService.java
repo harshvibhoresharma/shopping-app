@@ -23,13 +23,11 @@ public class ProductService implements iProductService{
     }
     @Override
     public Product addProduct(AddProductRequest request) {
-        Category category= Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
-                .orElseGet(()->{
-                   Category newCategory = new Category(request.getCategory().getName());
-                   return categoryRepository.save(newCategory);
-                });
-
-        request.setCategory(category);
+        Category reqCategory = request.getCategory();
+        Category category = categoryRepository.findByName(reqCategory.getName());
+        if(category==null){
+            categoryRepository.save(new Category(reqCategory.getName()));
+        }
         return productRepository.save(createProduct(request,category));
     }
     private static Product createProduct(AddProductRequest request, Category category){
@@ -56,10 +54,9 @@ public class ProductService implements iProductService{
         Product product = productRepository.findById(id)
                 .orElseThrow(()->
                         new ResourceNotFoundException("product not found"));
+        product.setCategory(null);
         productRepository.delete(product);
-
     }
-
     @Override
     public Product updateProduct(ProductUpdateRequest request, Long productId) {
         return productRepository.findById(productId)
@@ -73,9 +70,15 @@ public class ProductService implements iProductService{
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setInventory(request.getInventory());
-        Category category = categoryRepository.findByName(request.getCategory().getName());
-        if(category!=null) {
-            product.setCategory(request.getCategory());
+        Category reqCategory = request.getCategory();
+        if(reqCategory!=null){
+            String categoryName = reqCategory.getName();
+            Category category = categoryRepository.findByName(categoryName);
+            if(category==null){
+                category = categoryRepository.save(new Category(categoryName));
+            }
+            product.setCategory(category);
+
         }
         return productRepository.save(product);
     }

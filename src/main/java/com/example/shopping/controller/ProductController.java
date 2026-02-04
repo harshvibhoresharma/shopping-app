@@ -56,9 +56,8 @@ public class ProductController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id){
         try {
-            Product product=productService.getProductById(id);
             productService.deleteProductById(id);
-            return ResponseEntity.ok(new ApiResponse("successfully deleted product",product));
+            return ResponseEntity.ok(new ApiResponse("successfully deleted product",null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
         }
