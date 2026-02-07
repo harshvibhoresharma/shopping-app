@@ -1,5 +1,6 @@
 package com.example.shopping.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,5 +24,6 @@ public class Image {
     private String downloadUrl;
     @ManyToOne
     @JoinColumn(name="product_id")
+    @JsonBackReference
     private Product product;
 }
