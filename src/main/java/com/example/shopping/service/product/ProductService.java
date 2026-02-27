@@ -1,25 +1,32 @@
 package com.example.shopping.service.product;
 
-import com.example.shopping.exceptions.ProductNotFoundException;
+import com.example.shopping.dto.ImageDto;
+import com.example.shopping.dto.ProductDto;
 import com.example.shopping.exceptions.ResourceNotFoundException;
 import com.example.shopping.model.Category;
+import com.example.shopping.model.Image;
 import com.example.shopping.model.Product;
 import com.example.shopping.repository.CategoryRepository;
+import com.example.shopping.repository.ImageRepository;
 import com.example.shopping.repository.ProductRepository;
 import com.example.shopping.request.AddProductRequest;
 import com.example.shopping.request.ProductUpdateRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService implements iProductService{
-    final private ProductRepository productRepository;
+    private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    public ProductService(ProductRepository productRepository,CategoryRepository categoryRepository){
+    private final ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper, ImageRepository imageRepository){
         this.categoryRepository=categoryRepository;
         this.productRepository=productRepository;
+        this.modelMapper = modelMapper;
+        this.imageRepository = imageRepository;
     }
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -40,7 +47,6 @@ public class ProductService implements iProductService{
                 category
         );
     }
-
     @Override
     public Product getProductById(Long id) {
         return productRepository.findById(id)
@@ -117,6 +123,20 @@ public class ProductService implements iProductService{
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand,name);
+    }
+    public List<ProductDto> getConvertedProducts(List<Product> products){
+        return products.stream()
+                .map(product -> convertToDto(product)).toList();
+    }
+    @Override
+    public ProductDto convertToDto(Product product){
+        ProductDto productDto = modelMapper.map(product,ProductDto.class);
+        List<Image> images =imageRepository.findByProductId(product.getId());
+        List<ImageDto> imageDtos=images.stream()
+                .map(image -> modelMapper.map(image,ImageDto.class))
+                .toList();
+        productDto.setImages(imageDtos);
+        return productDto;
     }
 }
 
