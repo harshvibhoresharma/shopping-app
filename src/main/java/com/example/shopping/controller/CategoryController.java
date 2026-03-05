@@ -24,7 +24,7 @@ public class CategoryController {
     public ResponseEntity<ApiResponse> getAllCategories(){
         List<Category> list = categoryService.getAllCategories();
         if(list.isEmpty()){
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("failed to retrieve the files",null));
+            return ResponseEntity.ok(new ApiResponse("failed to retrieve the files",null));
 
         }
          return ResponseEntity.ok(new ApiResponse("successfully retrieved list",list));
