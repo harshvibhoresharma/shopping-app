@@ -51,8 +51,8 @@ public class ImageServiceTest {
         product.setId(1L);
 
         Image image = new Image();
-        image.setId(1L);
-        image.setFileName("test.jpg");
+        image.setImageId(1L);
+        image.setImageName("test.jpg");
 
         when(productRepository.findById(1L))
                 .thenReturn(Optional.of(product));
