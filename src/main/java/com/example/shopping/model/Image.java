@@ -16,8 +16,8 @@ import java.sql.Blob;
 public class Image {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
-    private String fileName;
+    private Long imageId;
+    private String imageName;
     private String fileType;
     @Lob
     private Blob image;

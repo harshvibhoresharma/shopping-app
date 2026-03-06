@@ -1,5 +1,6 @@
 package com.example.shopping.controller;
 
+import com.example.shopping.dto.ProductDto;
 import com.example.shopping.exceptions.ResourceNotFoundException;
 import com.example.shopping.model.Product;
 import com.example.shopping.request.AddProductRequest;
@@ -22,8 +23,9 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllProducts() {
         List<Product> products = productService.getAllProducts();
+        List<ProductDto> productDtos =productService.getConvertedProducts(products);
         return ResponseEntity.ok(
-                new ApiResponse("Successfully fetched products", products)
+                new ApiResponse("Successfully fetched products", productDtos)
         );
     }
     @GetMapping("/id/{id}")

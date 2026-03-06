@@ -10,9 +10,7 @@ import com.example.shopping.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -53,19 +51,19 @@ public class ImageService implements iImageService {
         for(MultipartFile file : files){
             try{
                 Image image = new Image();
-                image.setFileName(file.getOriginalFilename());
+                image.setImageName(file.getOriginalFilename());
                 image.setFileType(file.getContentType());
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product);
                 String buildUrl="/api/v1/images/image/download";
-                String downloadUrl=buildUrl+image.getId();
+                String downloadUrl=buildUrl+image.getImageId();
                 image.setDownloadUrl(downloadUrl);
                 Image saved=imageRepository.save(image);
-                saved.setDownloadUrl(buildUrl+saved.getId());
+                saved.setDownloadUrl(buildUrl+saved.getImageId());
                 imageRepository.save(saved);
                 ImageDto imageDto = new ImageDto();
-                imageDto.setImageId(saved.getId());
-                imageDto.setImageName(saved.getFileName());
+                imageDto.setImageId(saved.getImageId());
+                imageDto.setImageName(saved.getImageName());
                 imageDto.setDownloadUrl(saved.getDownloadUrl());
                 savedImageDto.add(imageDto);
 
@@ -80,7 +78,7 @@ public class ImageService implements iImageService {
     public void updateImage(MultipartFile file, Long imageId) {
         Image image=getImageById(imageId);
         try{
-            image.setFileName(file.getOriginalFilename());
+            image.setImageName(file.getOriginalFilename());
             image.setImage(new SerialBlob(file.getBytes()));
             imageRepository.save(image);
 
