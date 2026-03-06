@@ -21,13 +21,13 @@ class ImageRepositoryTest {
     void shouldSaveImage() {
 
         Image image = new Image();
-        image.setFileName("test.jpg");
+        image.setImageName("test.jpg");
         image.setFileType("image/jpeg");
 
         Image saved = imageRepository.save(image);
 
         assertThat(saved).isNotNull();
-        assertThat(saved.getId()).isGreaterThan(0);
+        assertThat(saved.getImageId()).isGreaterThan(0);
     }
 
     @Test
