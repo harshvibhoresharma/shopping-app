@@ -35,14 +35,14 @@ class ImageRepositoryTest {
     void shouldFindImageById() {
 
         Image image = new Image();
-        image.setFileName("test.jpg");
+        image.setImageName("test.jpg");
         image.setFileType("image/jpeg");
 
         Image saved = imageRepository.save(image);
 
-        Optional<Image> found = imageRepository.findById(saved.getId());
+        Optional<Image> found = imageRepository.findById(saved.getImageId());
 
         assertThat(found).isPresent();
-        assertThat(found.get().getFileName()).isEqualTo("test.jpg");
+        assertThat(found.get().getImageName()).isEqualTo("test.jpg");
     }
 }
