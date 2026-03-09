@@ -21,7 +21,7 @@ pipeline {
 
         stage('Trivy Security Scan') {
             steps {
-                bat 'trivy fs --severity HIGH,CRITICAL --exit-code 1 .'
+                bat '"C:\\Program Files\\trivy.exe" fs --severity HIGH,CRITICAL --exit-code 1 .'
             }
         }
 
