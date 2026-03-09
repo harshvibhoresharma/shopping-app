@@ -13,26 +13,24 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build and Run Tests') {
             steps {
                 bat 'mvn clean install'
             }
         }
 
-        stage('Dependency Vulnerability Scan') {
+        stage('Trivy Security Scan') {
             steps {
-                dependencyCheck additionalArguments: '--scan . --failOnCVSS 7',
-                        odcInstallation: 'OWASP-DC'
-            }
-        }
-
-        stage('Publish Security Report') {
-            steps {
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                bat 'trivy fs --severity HIGH,CRITICAL --exit-code 1 .'
             }
         }
 
     }
 
+    post {
+        always {
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }
 
 }
